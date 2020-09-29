@@ -17,7 +17,18 @@ const run = async () => {
     .select('body')
     .append('div')
     .lower()
-    .attr('id', 'scatter-graph-box');
+    .attr('id', 'scatter-graph-box')
+    .style('position', 'relative');
+
+  const tooltip = div.append('div').attr('id', 'tooltip');
+
+  tooltip
+    .style('position', 'absolute')
+    .style('z-index', '999')
+    .style('background-color', 'orangered')
+    .style('padding', '1rem')
+    .style('transition', 'opacity 0.22s linear,transform 0.22s linear')
+    .style('opacity', '0');
 
   const svg = d3
     .select('#scatter-graph-box')
@@ -31,12 +42,16 @@ const run = async () => {
       'box-shadow',
       '0px 19px 38px  rgba(0,0,0,0.3), 0px 15px 12px rgba(0,0,0,0.22) '
     )
-    .style('transition', 'all 0.22s linear')
+    .style('transition', 'opacity 0.22s linear,transform 0.22s linear')
+    .style('position', 'relative')
+    .style('z-index', '1')
     .on('mouseover', () => {
       svg.style('transform', 'translateY(-3px)');
+      tooltip.style('transform', 'translateY(-3px)');
     })
     .on('mouseout', () => {
       svg.style('transform', 'translateY(-0px)');
+      tooltip.style('transform', 'translateY(-0px)');
     });
 
   svg
@@ -99,7 +114,25 @@ const run = async () => {
     .attr('data-yvalue', (d) => new Date(d.Seconds * 1000))
     .attr('fill', (d) => (d.Doping === '' ? '#339966' : '#ffcc66'))
     .attr('stroke', '#000000')
-    .attr('stroke-width', '2');
+    .attr('stroke-width', '1')
+    .on('mouseover', function (d) {
+      console.log(d3.select(this).attr('cx'));
+      tooltip
+        .style('opacity', '1')
+        .html(
+          `
+      <p>${d.Name} : ${d.Nationality}</p>
+      <p>Year: ${d.Year}, Time: ${d.Time}</p>
+      <p>${d.Doping}</p>
+      `
+        )
+        .style('left', `calc(${d3.select(this).attr('cx')}px + 10px)`)
+        .style('top', `calc(${d3.select(this).attr('cy')}px - 25px)`)
+        .attr('data-year', `${d3.select(this).attr('data-xvalue')}`);
+    })
+    .on('mouseout', (d) => {
+      tooltip.style('opacity', '0');
+    });
 
   const legend = svg
     .append('g')
@@ -119,7 +152,7 @@ const run = async () => {
     .append('rect')
     .attr('width', 20)
     .attr('height', 20)
-    .attr('fill', '#ffcc66')
+    .attr('fill', '#339966')
     .attr('x', width * 0.9 + 10)
     .attr('y', height * 0.3 - 15)
     .attr('stroke', '#000000')
@@ -136,10 +169,26 @@ const run = async () => {
     .append('rect')
     .attr('width', 20)
     .attr('height', 20)
-    .attr('fill', '#339966')
+    .attr('fill', '#ffcc66')
     .attr('x', width * 0.9 + 10)
     .attr('y', height * 0.3 + 15)
     .attr('stroke', '#000000')
     .attr('stroke-width', '2');
+
+  const yAxisText = svg
+    .append('text')
+    .text('Time to Minutes')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('y', height * 0.2)
+    .attr('transform', 'translate(165,70) rotate(90)');
+
+  const xAxisText = svg
+    .append('text')
+    .text('Years')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('x', width - padding * 3)
+    .attr('y', height - padding - 5);
 };
 run();
