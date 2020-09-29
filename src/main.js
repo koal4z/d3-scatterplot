@@ -25,10 +25,15 @@ const run = async () => {
   tooltip
     .style('position', 'absolute')
     .style('z-index', '999')
-    .style('background-color', 'orangered')
+    .style('background-color', '#ff414d')
+    .style('color', '#eeeeee')
+    .style('font-size', '1rem')
     .style('padding', '1rem')
-    .style('transition', 'opacity 0.22s linear,transform 0.22s linear')
-    .style('opacity', '0');
+    .style('transition', 'transform 0.22s linear')
+    .style('opacity', '0')
+    .style('display', 'block')
+    .style('white-space', 'nowrap')
+    .style('border-radius', '10px');
 
   const svg = d3
     .select('#scatter-graph-box')
@@ -121,17 +126,18 @@ const run = async () => {
         .style('opacity', '1')
         .html(
           `
-      <p>${d.Name} : ${d.Nationality}</p>
-      <p>Year: ${d.Year}, Time: ${d.Time}</p>
-      <p>${d.Doping}</p>
+      <p class='tooltip-box' style="font-size:1.5rem; padding: 0.25rem 0;">${d.Name} : ${d.Nationality}</p>
+      <p class='tooltip-box' style="font-size:1.5rem; padding: 0.25rem 0;">Year: ${d.Year}, Time: ${d.Time}</p>
+      <p class='tooltip-box' style="font-size:1.5rem; padding: 0.25rem 0;">${d.Doping}</p>
       `
         )
         .style('left', `calc(${d3.select(this).attr('cx')}px + 10px)`)
         .style('top', `calc(${d3.select(this).attr('cy')}px - 25px)`)
-        .attr('data-year', `${d3.select(this).attr('data-xvalue')}`);
+        .attr('data-year', `${d3.select(this).attr('data-xvalue')}`)
+        .style('z-index', '999');
     })
     .on('mouseout', (d) => {
-      tooltip.style('opacity', '0');
+      tooltip.style('opacity', '0').style('z-index', '0');
     });
 
   const legend = svg
