@@ -2,4 +2,4 @@
 
 ### learn with freecodecamp
 
-demo is comming soon...
+[demo](https://scatter-plot-koal4z.netlify.app)
