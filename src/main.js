@@ -92,12 +92,53 @@ const run = async () => {
     .enter()
     .append('circle')
     .attr('class', 'dot')
-    .attr('r', 4)
+    .attr('r', 6)
     .attr('cx', (d) => padding + xScale(new Date(`${d.Year}`)))
     .attr('cy', (d) => yScale(d.Seconds))
     .attr('data-xvalue', (d) => d.Year)
     .attr('data-yvalue', (d) => new Date(d.Seconds * 1000))
     .attr('fill', (d) => (d.Doping === '' ? '#339966' : '#ffcc66'))
+    .attr('stroke', '#000000')
+    .attr('stroke-width', '2');
+
+  const legend = svg
+    .append('g')
+    .attr('class', 'legend-box')
+    .attr('id', 'legend')
+    .attr('width', width)
+    .attr('height', height);
+
+  legend
+    .append('text')
+    .text('No doping allegations')
+    .attr('text-anchor', 'end')
+    .attr('x', width * 0.9)
+    .attr('y', height * 0.3);
+
+  legend
+    .append('rect')
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr('fill', '#ffcc66')
+    .attr('x', width * 0.9 + 10)
+    .attr('y', height * 0.3 - 15)
+    .attr('stroke', '#000000')
+    .attr('stroke-width', '2');
+
+  legend
+    .append('text')
+    .text('Riders with doping allegations')
+    .attr('text-anchor', 'end')
+    .attr('x', width * 0.9)
+    .attr('y', height * 0.3 + 30);
+
+  legend
+    .append('rect')
+    .attr('width', 20)
+    .attr('height', 20)
+    .attr('fill', '#339966')
+    .attr('x', width * 0.9 + 10)
+    .attr('y', height * 0.3 + 15)
     .attr('stroke', '#000000')
     .attr('stroke-width', '2');
 };
